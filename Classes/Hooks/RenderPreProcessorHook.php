@@ -60,6 +60,7 @@ class RenderPreProcessorHook
     public function renderPreProcessorProc(&$params, PageRenderer $pagerenderer)
     {
 
+
         if (!is_array($params['cssFiles'])) {
             return;
         }
@@ -74,7 +75,7 @@ class RenderPreProcessorHook
         // we need to rebuild the CSS array to keep order of CSS files
         $cssFiles = array();
         foreach ($params['cssFiles'] as $file => $conf) {
-            $pathinfo = pathinfo($conf['file']);
+             $pathinfo = pathinfo($conf['file']);
 
             if ($pathinfo['extension'] !== 'scss') {
                 $cssFiles[$file] = $conf;
@@ -103,6 +104,7 @@ class RenderPreProcessorHook
                     }
                 }
             }
+
             if (strlen($outputfile) > 0) {
                 $outputDir = dirname($outputfile);
                 $filename = basename($outputfile);
@@ -191,10 +193,15 @@ class RenderPreProcessorHook
     protected function compileScss($scssFilename, $cssFilename, $vars = [], $showLineNumber = false, $formatter = null)
     {
 
-        $extPath = ExtensionManagementUtility::extPath('ws_scss');
-        require_once($extPath . 'Resources/Private/scssphp/scss.inc.php');
+        /* in composer mode we dont need to
+         * include php files - we use autoload mechanism
+         * todo: if non_composermode we need to use the typo3 autoload
+         */
+        //extPath = ExtensionManagementUtility::extPath('ws_scss');
+        //require_once($extPath . 'Resources/Private/scssphp/scss.inc.php');
 
         $parser = new \Leafo\ScssPhp\Compiler();
+
         if (file_exists($scssFilename)) {
 
             $parser->setVariables($vars);
